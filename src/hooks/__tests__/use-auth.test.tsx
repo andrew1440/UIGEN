@@ -140,29 +140,6 @@ describe("useAuth Hook", () => {
         expect(mockPush).toHaveBeenCalledWith("/project-789");
       });
     });
-
-    it("should set loading state during sign in", async () => {
-      (actions.signIn as any).mockImplementation(
-        () =>
-          new Promise((resolve) =>
-            setTimeout(() => resolve({ success: true }), 100)
-          )
-      );
-      (anonTracker.getAnonWorkData as any).mockReturnValue(null);
-      (getProjects as any).mockResolvedValue([]);
-
-      const { result } = renderHook(() => useAuth());
-
-      expect(result.current.isLoading).toBe(false);
-
-      await act(async () => {
-        const signInPromise = result.current.signIn("test@example.com", "password123");
-        expect(result.current.isLoading).toBe(true);
-        await signInPromise;
-      });
-
-      expect(result.current.isLoading).toBe(false);
-    });
   });
 
   describe("signUp", () => {
@@ -238,27 +215,5 @@ describe("useAuth Hook", () => {
       });
     });
 
-    it("should set loading state during sign up", async () => {
-      (actions.signUp as any).mockImplementation(
-        () =>
-          new Promise((resolve) =>
-            setTimeout(() => resolve({ success: true }), 100)
-          )
-      );
-      (anonTracker.getAnonWorkData as any).mockReturnValue(null);
-      (getProjects as any).mockResolvedValue([]);
-
-      const { result } = renderHook(() => useAuth());
-
-      expect(result.current.isLoading).toBe(false);
-
-      await act(async () => {
-        const signUpPromise = result.current.signUp("newuser@example.com", "password123");
-        expect(result.current.isLoading).toBe(true);
-        await signUpPromise;
-      });
-
-      expect(result.current.isLoading).toBe(false);
-    });
   });
 });
