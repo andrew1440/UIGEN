@@ -15,7 +15,7 @@ export function useAuth() {
     // Get any anonymous work
     const anonWork = getAnonWorkData();
 
-    if (anonWork && anonWork.messages.length > 0) {
+    if (anonWork && Array.isArray(anonWork.messages) && anonWork.messages.length > 0) {
       // Create a project with the anonymous work
       const project = await createProject({
         name: `Design from ${new Date().toLocaleTimeString()}`,
