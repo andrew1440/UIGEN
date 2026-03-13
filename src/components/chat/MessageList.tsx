@@ -10,6 +10,50 @@ interface MessageListProps {
   isLoading?: boolean;
 }
 
+// Helper function to generate user-friendly tool messages
+function getToolMessage(toolName: string, toolArgs?: Record<string, any>): string {
+  if (toolName === "str_replace_editor") {
+    if (!toolArgs) return "Editing file...";
+    
+    const action = toolArgs.command;
+    const path = toolArgs.path || toolArgs.file_path;
+    const fileName = path ? path.split("/").pop() : "file";
+    
+    if (action === "create") {
+      return `Creating ${fileName}`;
+    } else if (action === "str_replace") {
+      return `Editing ${fileName}`;
+    } else if (action === "delete") {
+      return `Deleting ${fileName}`;
+    }
+    return `Modifying ${fileName}`;
+  } else if (toolName === "file_manager") {
+    if (!toolArgs) return "Managing files...";
+    
+    const action = toolArgs.action;
+    const path = toolArgs.path || toolArgs.file_path;
+    const fileName = path ? path.split("/").pop() : "file";
+    
+    switch (action) {
+      case "list":
+        return `Listing files in ${fileName}`;
+      case "create":
+        return `Creating ${fileName}`;
+      case "delete":
+        return `Deleting ${fileName}`;
+      default:
+        return `Managing ${fileName}`;
+    }
+  }
+  
+  return toolName;
+}
+
+interface MessageListProps {
+  messages: Message[];
+  isLoading?: boolean;
+}
+
 export function MessageList({ messages, isLoading }: MessageListProps) {
   if (messages.length === 0) {
     return (
@@ -76,17 +120,18 @@ export function MessageList({ messages, isLoading }: MessageListProps) {
                             );
                           case "tool-invocation":
                             const tool = part.toolInvocation;
+                            const userFriendlyMessage = getToolMessage(tool.toolName, tool.args);
                             return (
-                              <div key={partIndex} className="inline-flex items-center gap-2 mt-2 px-3 py-1.5 bg-neutral-50 rounded-lg text-xs font-mono border border-neutral-200">
+                              <div key={partIndex} className="inline-flex items-center gap-2 mt-2 px-3 py-1.5 bg-neutral-50 rounded-lg text-xs font-medium border border-neutral-200">
                                 {tool.state === "result" && tool.result ? (
                                   <>
                                     <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
-                                    <span className="text-neutral-700">{tool.toolName}</span>
+                                    <span className="text-neutral-700">{userFriendlyMessage}</span>
                                   </>
                                 ) : (
                                   <>
                                     <Loader2 className="w-3 h-3 animate-spin text-blue-600" />
-                                    <span className="text-neutral-700">{tool.toolName}</span>
+                                    <span className="text-neutral-700">{userFriendlyMessage}</span>
                                   </>
                                 )}
                               </div>
