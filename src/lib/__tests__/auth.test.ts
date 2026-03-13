@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { createSession, getSession, deleteSession, verifySession } from "@/lib/auth";
-import { cookies } from "next/headers";
-import { jwtVerify, SignJWT } from "jose";
 import { NextRequest } from "next/server";
+
+// Mock server-only first to prevent errors
+vi.mock("server-only");
 
 // Mock dependencies
 vi.mock("next/headers", () => ({
@@ -13,6 +13,11 @@ vi.mock("jose", () => ({
   SignJWT: vi.fn(),
   jwtVerify: vi.fn(),
 }));
+
+// Now import after mocking
+import { createSession, getSession, deleteSession, verifySession } from "@/lib/auth";
+import { cookies } from "next/headers";
+import { jwtVerify, SignJWT } from "jose";
 
 describe("Auth Library", () => {
   beforeEach(() => {

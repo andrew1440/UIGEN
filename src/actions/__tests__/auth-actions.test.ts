@@ -1,12 +1,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { signUp, signIn, signOut, getUser } from "@/actions";
-import { prisma } from "@/lib/prisma";
-import * as authLib from "@/lib/auth";
-import bcrypt from "bcrypt";
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 
-// Mock dependencies
+// Mock server-only first
+vi.mock("server-only");
+
+// Mock dependencies before imports
 vi.mock("@/lib/prisma", () => ({
   prisma: {
     user: {
@@ -20,6 +17,14 @@ vi.mock("@/lib/auth");
 vi.mock("bcrypt");
 vi.mock("next/cache");
 vi.mock("next/navigation");
+
+// Now import after mocking
+import { signUp, signIn, signOut, getUser } from "@/actions";
+import { prisma } from "@/lib/prisma";
+import * as authLib from "@/lib/auth";
+import bcrypt from "bcrypt";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 describe("Auth Actions", () => {
   beforeEach(() => {

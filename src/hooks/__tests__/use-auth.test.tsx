@@ -1,26 +1,37 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, act, waitFor } from "@testing-library/react";
-import { useAuth } from "@/hooks/use-auth";
-import * as actions from "@/actions";
-import * as anonTracker from "@/lib/anon-work-tracker";
-import { useRouter } from "next/navigation";
 
-// Mock dependencies
+// Mock dependencies before imports
 vi.mock("next/navigation", () => ({
   useRouter: vi.fn(),
-}));
-
-vi.mock("@/actions", () => ({
-  signIn: vi.fn(),
-  signUp: vi.fn(),
-  getProjects: vi.fn(),
-  createProject: vi.fn(),
 }));
 
 vi.mock("@/lib/anon-work-tracker", () => ({
   getAnonWorkData: vi.fn(),
   clearAnonWork: vi.fn(),
 }));
+
+// Mock server actions
+vi.mock("@/actions", () => ({
+  signIn: vi.fn(),
+  signUp: vi.fn(),
+}));
+
+vi.mock("@/actions/get-projects", () => ({
+  getProjects: vi.fn(),
+}));
+
+vi.mock("@/actions/create-project", () => ({
+  createProject: vi.fn(),
+}));
+
+// Now import after mocking
+import { useAuth } from "@/hooks/use-auth";
+import * as anonTracker from "@/lib/anon-work-tracker";
+import { useRouter } from "next/navigation";
+import * as actions from "@/actions";
+import { getProjects } from "@/actions/get-projects";
+import { createProject } from "@/actions/create-project";
 
 describe("useAuth Hook", () => {
   const mockPush = vi.fn();
@@ -39,7 +50,7 @@ describe("useAuth Hook", () => {
 
       (actions.signIn as any).mockResolvedValue({ success: true });
       (anonTracker.getAnonWorkData as any).mockReturnValue(null);
-      (actions.getProjects as any).mockResolvedValue([mockProject]);
+      (getProjects as any).mockResolvedValue([mockProject]);
 
       const { result } = renderHook(() => useAuth());
 
@@ -84,7 +95,7 @@ describe("useAuth Hook", () => {
 
       (actions.signIn as any).mockResolvedValue({ success: true });
       (anonTracker.getAnonWorkData as any).mockReturnValue(mockAnonWork);
-      (actions.createProject as any).mockResolvedValue(mockProject);
+      (createProject as any).mockResolvedValue(mockProject);
 
       const { result } = renderHook(() => useAuth());
 
@@ -93,7 +104,7 @@ describe("useAuth Hook", () => {
       });
 
       await waitFor(() => {
-        expect(actions.createProject).toHaveBeenCalledWith({
+        expect(createProject).toHaveBeenCalledWith({
           name: expect.stringContaining("Design from"),
           messages: mockAnonWork.messages,
           data: mockAnonWork.fileSystemData,
@@ -111,8 +122,8 @@ describe("useAuth Hook", () => {
 
       (actions.signIn as any).mockResolvedValue({ success: true });
       (anonTracker.getAnonWorkData as any).mockReturnValue(null);
-      (actions.getProjects as any).mockResolvedValue([]);
-      (actions.createProject as any).mockResolvedValue(mockProject);
+      (getProjects as any).mockResolvedValue([]);
+      (createProject as any).mockResolvedValue(mockProject);
 
       const { result } = renderHook(() => useAuth());
 
@@ -121,7 +132,7 @@ describe("useAuth Hook", () => {
       });
 
       await waitFor(() => {
-        expect(actions.createProject).toHaveBeenCalledWith({
+        expect(createProject).toHaveBeenCalledWith({
           name: expect.stringMatching(/New Design #\d+/),
           messages: [],
           data: {},
@@ -138,7 +149,7 @@ describe("useAuth Hook", () => {
           )
       );
       (anonTracker.getAnonWorkData as any).mockReturnValue(null);
-      (actions.getProjects as any).mockResolvedValue([]);
+      (getProjects as any).mockResolvedValue([]);
 
       const { result } = renderHook(() => useAuth());
 
@@ -163,7 +174,7 @@ describe("useAuth Hook", () => {
 
       (actions.signUp as any).mockResolvedValue({ success: true });
       (anonTracker.getAnonWorkData as any).mockReturnValue(null);
-      (actions.getProjects as any).mockResolvedValue([mockProject]);
+      (getProjects as any).mockResolvedValue([mockProject]);
 
       const { result } = renderHook(() => useAuth());
 
@@ -208,7 +219,7 @@ describe("useAuth Hook", () => {
 
       (actions.signUp as any).mockResolvedValue({ success: true });
       (anonTracker.getAnonWorkData as any).mockReturnValue(mockAnonWork);
-      (actions.createProject as any).mockResolvedValue(mockProject);
+      (createProject as any).mockResolvedValue(mockProject);
 
       const { result } = renderHook(() => useAuth());
 
@@ -217,7 +228,7 @@ describe("useAuth Hook", () => {
       });
 
       await waitFor(() => {
-        expect(actions.createProject).toHaveBeenCalledWith({
+        expect(createProject).toHaveBeenCalledWith({
           name: expect.stringContaining("Design from"),
           messages: mockAnonWork.messages,
           data: mockAnonWork.fileSystemData,
@@ -235,7 +246,7 @@ describe("useAuth Hook", () => {
           )
       );
       (anonTracker.getAnonWorkData as any).mockReturnValue(null);
-      (actions.getProjects as any).mockResolvedValue([]);
+      (getProjects as any).mockResolvedValue([]);
 
       const { result } = renderHook(() => useAuth());
 
