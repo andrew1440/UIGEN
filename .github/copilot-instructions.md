@@ -190,7 +190,7 @@ DATABASE_URL=file:./dev.db (auto-configured for SQLite)
 
 ## Testing
 
-### Test Files
+### Unit/Component Tests
 Tests are colocated with components in `__tests__/` directories:
 ```
 src/
@@ -200,17 +200,59 @@ src/
 └── lib/transform/__tests__/
 ```
 
-### Running Tests
+#### Running Unit Tests
 ```bash
 npm run test                    # Run all tests
 npm run test -- FileTree        # Run specific test
 npm run test -- --watch        # Watch mode
 ```
 
-### Testing Tools
+#### Testing Tools
 - **Vitest**: Test runner
 - **React Testing Library**: Component testing
 - **jsdom**: DOM environment
+
+### End-to-End (E2E) Tests
+E2E tests use Playwright to test the full application flow:
+```
+e2e/
+├── basic.spec.ts              # Basic page load and UI tests
+└── auth.spec.ts               # Authentication and interaction tests
+```
+
+#### Running E2E Tests
+```bash
+npm run test:e2e               # Run all E2E tests
+npm run test:e2e:ui            # Run tests with Playwright UI
+npm run test:e2e:debug         # Run tests in debug mode
+npm run test:e2e:report        # View HTML test report
+```
+
+#### E2E Testing Tools
+- **Playwright**: Browser automation and end-to-end testing
+- **@playwright/mcp**: Playwright MCP server integration
+
+#### E2E Test Coverage
+- Page load and navigation
+- UI rendering and responsiveness
+- Authentication workflows (when available)
+- Chat interface interaction
+- Error handling and recovery
+- Accessibility compliance
+
+#### Configuration
+- **Config File**: `playwright.config.ts`
+- **Base URL**: `http://localhost:3000`
+- **Web Server**: Automatically starts `npm run dev`
+- **Browsers**: Chromium, Firefox, WebKit
+- **Viewports**: Desktop, Mobile, Tablet
+
+#### Tips for Writing E2E Tests
+1. Tests automatically start the dev server
+2. Use `page.goto('/')` for relative navigation
+3. Wait for network idle: `await page.waitForLoadState('networkidle')`
+4. Use selectors: `button`, `[role="button"]`, `input`, etc.
+5. Tests run in parallel by default (set `fullyParallel: false` to disable)
 
 ---
 
