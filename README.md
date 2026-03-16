@@ -77,6 +77,27 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
+## 🤖 Local LLM Integration (Ollama)
+
+UIGen is optimized to work with local models via **Ollama**, allowing for secure, offline component generation.
+
+### Setup
+
+1. **Install Ollama:** Download and install from [ollama.com](https://ollama.com).
+2. **Pull a Model:** For best performance on most machines, we recommend **Llama 3.2 1B**:
+   ```bash
+   ollama pull llama3.2:1b
+   ```
+3. **Run Locally:**
+   ```bash
+   ollama run llama3.2:1b
+   ```
+
+### Hardware Note
+Large models like **Llama 3.3 70B** require significant GPU memory (VRAM) and disk space (approx. 40GB). For local consumer hardware, 1B - 8B parameter models are recommended.
+
+---
+
 ## 📚 Usage Guide
 
 ### For First-Time Users
@@ -231,4 +252,4 @@ This project is open source and available under the MIT License.
 
 ---
 
-**Made with ❤️ for developers who love AI-powered tools**
+**Made with  for developers who love AI-powered tools**
